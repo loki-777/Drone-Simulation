@@ -4,9 +4,9 @@ def PID(roll, pitch, yaw, f):
 	#Define the global variables to prevent them from dying and resetting to zero, each time a function call occurs. Some of these variables 		may be redundant.
 	global kp_roll, ki_roll, kd_roll, kp_pitch, ki_pitch, kd_pitch, kp_yaw, ki_yaw, kd_yaw, prevErr_roll, prevErr_pitch, prevErr_yaw, pMem_roll, pMem_yaw, pMem_pitch, iMem_roll, iMem_pitch, iMem_yaw, dMem_roll, dMem_pitch, dMem_yaw, flag, setpoint, sampleTime
 	
-        kp_roll = 50
-	ki_roll = 50
-	kd_roll = 50
+        kp_roll = 70
+	ki_roll = 0.0002
+	kd_roll = 89
 	kp_pitch = kp_roll
 	ki_pitch = ki_roll
 	kd_pitch = kd_roll
@@ -15,7 +15,6 @@ def PID(roll, pitch, yaw, f):
 	kd_yaw = 0
 	flag = 0
 	
-        sampleTime = 0
 	reference = 0
         
         #errors in degrees
@@ -46,7 +45,7 @@ def PID(roll, pitch, yaw, f):
 	dErr_roll = err_roll - prevErr_roll
 	dErr_yaw = err_yaw - prevErr_yaw
 	
-	if(dTime >= sampleTime):
+	if(dTime > 0):
 		#Kp*e(t)
 		pMem_roll = kp_roll * err_roll
 		pMem_pitch = kp_pitch * err_pitch
@@ -58,12 +57,12 @@ def PID(roll, pitch, yaw, f):
 		iMem_yaw += err_yaw * dTime
 	        
                 #extreme boundary cases
-		if(iMem_roll > 100): iMem_roll = 100
-		if(iMem_roll < -100): iMem_roll = -100
-		if(iMem_pitch > 100): iMem_pitch = 100
-		if(iMem_pitch < -100): iMem_pitch = -100
-		if(iMem_yaw > 100): iMem_yaw = 100
-		if(iMem_yaw < -100): iMem_yaw = 100
+		if(iMem_roll > 400): iMem_roll = 400
+		if(iMem_roll < -400): iMem_roll = -400
+		if(iMem_pitch > 400): iMem_pitch = 400
+		if(iMem_pitch < -400): iMem_pitch = -400
+		if(iMem_yaw > 400): iMem_yaw = 400
+		if(iMem_yaw < -400): iMem_yaw = 400
 		
 		#derivative(e(t))
 		dMem_roll = dErr_roll / dTime
@@ -97,10 +96,10 @@ def PID(roll, pitch, yaw, f):
 	if(esc_fr > 2000): esc_fr = 2000
 	if(esc_fl > 2000): esc_fl = 2000
 	
-	if(esc_br < 150): esc_br = 150
-	if(esc_bl < 150): esc_bl = 150
-	if(esc_fr < 150): esc_fr = 150
-	if(esc_fl < 150): esc_fl = 150
+	if(esc_br < 1100): esc_br = 1100
+	if(esc_bl < 1100): esc_bl = 1100
+	if(esc_fr < 1100): esc_fr = 1100
+	if(esc_fl < 1100): esc_fl = 1100
 	
 	#Map the esc values to motor values
 	br_motor_vel = ((esc_br - 1500)/25) + 50
